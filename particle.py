@@ -24,10 +24,11 @@ def main():
     # main loop
     while running:
         dt = clock.tick(60)
-        screen.fill("black")
+        screen.fill((100, 100, 128))
         x_m, y_m = pygame.mouse.get_pos()
         # event handling, gets all event from the event queue
-        for part in particles:
+        for i in range(len(particles)):
+            part = particles[i]
             part[0] = (part[0] + random.uniform(-1, 1)) % width
             part[1] = (part[1] + random.uniform(-1, 1)) % width
             
@@ -35,35 +36,40 @@ def main():
             snd_min_dist = math.inf
             min_other = None
             snd_min_other = None
-            for other in particles:
-                if other == part:
+            for j in range(i + 1, len(particles)):
+                other = particles[j]
+                magn = math.hypot(other[0] - part[0], other[1] - part[1])
+                if magn == 0:
                     continue
-                len = math.hypot(other[0] - part[0], other[1] - part[1])
-                if len < min_dist:
+
+                if magn < min_dist:
                     snd_min_dist = min_dist
                     snd_min_other = min_other
-                    min_dist = len
+                    min_dist = magn
                     min_other = other
-                elif len < snd_min_dist:
-                    snd_min_dist = len
+                elif magn < snd_min_dist:
+                    snd_min_dist = magn
                     snd_min_other = other
 
-                norm_x, norm_y = (other[0] - part[0])/len, (other[1] - part[1])/len,
+                norm_x, norm_y = (other[0] - part[0])/magn, (other[1] - part[1])/magn,
                 # factor = 1 / (1 + math.exp(-(len)))
-                factor = 0.005 * (len - 300) 
+                factor = 0.005 * (magn - 300) 
                 part[0] += factor * norm_x
                 part[1] += factor * norm_y
 
-            min_dist_col = min(255, max(0, 600 - 10 * min_dist))
-            snd_min_dist_col = min(255, max(0, 600 - 10 * snd_min_dist))
-            pygame.draw.line(screen, (min_dist_col, min_dist_col, min_dist_col), (part[0], part[1]), (min_other[0], min_other[1]))
-            pygame.draw.line(screen, (snd_min_dist_col, snd_min_dist_col, snd_min_dist_col), (part[0], part[1]), (snd_min_other[0], snd_min_other[1]))
-            len = math.hypot(x_m - part[0], y_m - part[1])
-            norm_x, norm_y = (x_m - part[0])/len, (y_m - part[1])/len
-            factor = 0.005 * (800 - len)
+            if min_other:
+                min_dist_col = min(255, max(0, 600 - 7 * min_dist))
+                pygame.draw.aaline(screen, (min_dist_col, min_dist_col, min_dist_col), (part[0], part[1]), (min_other[0], min_other[1]))
+            if snd_min_other:
+                snd_min_dist_col = min(255, max(0, 600 - 7 * snd_min_dist))
+                pygame.draw.aaline(screen, (snd_min_dist_col, snd_min_dist_col, snd_min_dist_col), (part[0], part[1]), (snd_min_other[0], snd_min_other[1]))
+
+            magn = math.hypot(x_m - part[0], y_m - part[1])
+            norm_x, norm_y = (x_m - part[0])/magn, (y_m - part[1])/magn
+            factor = 0.005 * (800 - magn)
             part[0] += factor * norm_x
             part[1] += factor * norm_y
-            # pygame.draw.circle(screen, (255, 255, 255), (part[0], part[1]), 5)
+            pygame.draw.circle(screen, (255, 255, 255), (part[0], part[1]), 5)
 
         for event in pygame.event.get():
             # only do something if the event is of type QUIT
