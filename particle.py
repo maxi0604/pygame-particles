@@ -53,7 +53,7 @@ def main():
 
                 norm_x, norm_y = (other[0] - part[0])/magn, (other[1] - part[1])/magn,
                 # factor = 1 / (1 + math.exp(-(len)))
-                factor = 0.005 * (magn - 300) 
+                factor = 0.005 * (magn - 300)
                 part[0] += factor * norm_x
                 part[1] += factor * norm_y
 
@@ -69,7 +69,7 @@ def main():
             factor = 0.005 * (800 - magn)
             part[0] += factor * norm_x
             part[1] += factor * norm_y
-            pygame.draw.circle(screen, (255, 255, 255), (part[0], part[1]), 5)
+            pygame.draw.circle(screen, (255, 255, 255), (part[0], part[1]), 4)
 
         for event in pygame.event.get():
             # only do something if the event is of type QUIT
