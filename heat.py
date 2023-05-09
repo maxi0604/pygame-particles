@@ -30,21 +30,20 @@ def do_step(world, world_next, width, height):
     alpha = 1/5
     for x in range(width):
         for y in range(height):
-            offsets = [(1, 0), (-1, 0), (0, 1), (0, -1),
-                        (1, 1), (1, -1), (-1, 1), (-1, -1)]
             delta = 0
-            for dx, dy in offsets:
-                beta = 1
-                if dx != 0 and dy != 0:
-                    beta = 0.707
-                ox, oy = x + dx, y + dy
-                if not (0 <= ox < width and 0 <= oy < height):
-                    continue
-                delta += beta * (world[ox][oy] - world[x][y])
+            for dx in range(-1, 2):
+                for dy in range(-1, 2):
+                    beta = 1
+                    if dx != 0 and dy != 0:
+                        beta = 0.707
+                    ox, oy = x + dx, y + dy
+                    if not (0 <= ox < width and 0 <= oy < height):
+                        continue
+                    delta += beta * (world[ox, oy] - world[x, y])
 
-            world_next[x][y] = world[x][y] + alpha * delta
+            world_next[x, y] = world[x, y] + alpha * delta
 
-            sum += world_next[x][y]
+            sum += world_next[x, y]
     return sum
 def main():
     width, height = 300, 200
@@ -66,7 +65,7 @@ def main():
     for i in range(width // 2):
         for j in range(height):
             if i < j:
-                world[i][j] = 1
+                world[i, j] = 1
     # main loop
     fcount = 0
     while running:
@@ -76,14 +75,14 @@ def main():
         (mouse_left, mouse_mid, mouse_right) = pygame.mouse.get_pressed(num_buttons=3)
         (mouse_x, mouse_y) = pygame.mouse.get_pos()
         if mouse_left:
-            world[mouse_x][mouse_y] = 10
+            world[mouse_x, mouse_y] = 10
         elif mouse_right:
-            world[mouse_x][mouse_y] = 0
+            world[mouse_x, mouse_y] = 0
 
         do_step(world, world_next, width, height)
         for x in range(width):
             for y in range(height):
-                screen.set_at((x, y), get_color(world_next[x][y]))
+                screen.set_at((x, y), get_color(world_next[x, y]))
         for event in pygame.event.get():
             # only do something if the event is of type QUIT
             if event.type == pygame.QUIT:
