@@ -59,10 +59,10 @@ def main():
     # define a variable to control the main loop
     running = True
 
-    # world = [[0 for j in range(height)] for j in range(width)]
-    # world_next = [[0 for j in range(height)] for j in range(width)]
-    world = np.zeros((width, height))
-    world_next = np.zeros((width, height))
+    world = [[0 for j in range(height)] for j in range(width)]
+    world_next = [[0 for j in range(height)] for j in range(width)]
+    # world = np.zeros((width, height))
+    # world_next = np.zeros((width, height))
     for i in range(width // 2):
         for j in range(height):
             if i < j:
